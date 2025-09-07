@@ -39,11 +39,11 @@ class KafkaConfigurations:
             logger.error(f"Error connecting to Kafka consumer: {e}")
             return None
 
-    @staticmethod
-    def publish_message(producer, topic, message):
-        try:
-            producer.send(topic, message)
-            producer.flush()
-            logger.info(f"Message sent to topic {topic}: {message}")
-        except KafkaError as e:
-            logger.error(f"Error publishing message to topic {topic}: {e}")
+    # @staticmethod
+    # def publish_message(producer, topic, message):
+    #     try:
+    #         producer.send(topic, message)
+    #         producer.flush()
+    #         logger.info(f"Message sent to topic {topic}: {message}")
+    #     except KafkaError as e:
+    #         logger.error(f"Error publishing message to topic {topic}: {e}")

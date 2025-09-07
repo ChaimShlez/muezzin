@@ -8,10 +8,18 @@ logger = logging.getLogger(__name__)
 
 class DataLoader:
 
-    def __init__(self):
-        self.podcasts=None
-        self.file_path = Path("C:\podcasts")
+    def __init__(self,path):
+        self.metadataFromPodcasts=None
+        self.path=path
+        self.file_path = Path(str(self.path))
+        print(self.file_path)
         # print(file_path.stat())
+
+
+    def set_path(self,path):
+        self.path=path
+
+
 
 
     def extract_metadata(self):
@@ -23,6 +31,7 @@ class DataLoader:
             for item in  self.file_path.iterdir():
                 stats = item.stat()
                 file={
+                     "path":self.path,
                      "Name":item.name,
                      "Size":stats.st_size,
                      "Creation time" :str(datetime.datetime.fromtimestamp(stats.st_ctime)),
@@ -30,11 +39,12 @@ class DataLoader:
 
                 }
                 metadata.append(file)
-                self.podcasts=metadata
+                self.metadataFromPodcasts=metadata
+
 
 
         else:
-            logger.error(f"The path '{ self.file_path}' is not a valid directory.")
+            logger.error(f"The path '{ self.file_path}' is not a valid folder.")
 
 
 
@@ -44,10 +54,4 @@ class DataLoader:
 
 
 
-
-
-if __name__ == "__main__":
-    d=DataLoader()
-    d.extract_metadata()
-    # d.fetcher_from()
 
