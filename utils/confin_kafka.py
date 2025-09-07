@@ -23,14 +23,14 @@ class KafkaConfigurations:
             return None
 
     @staticmethod
-    def consumer_connect(group_id, *topics):
+    def consumer_connect(*topics):
         try:
             consumer = KafkaConsumer(
                 *topics,
                 bootstrap_servers=os.getenv("KAFKA_BROKER", "localhost:9092"),
                 auto_offset_reset='earliest',
-                group_id=group_id,
-                enable_auto_commit=True,
+                # group_id=group_id,
+                enable_auto_commit=False,
                 value_deserializer=lambda v: json.loads(v.decode('utf-8'))
             )
             logger.info(f"Kafka consumer connected to topics: {topics}")

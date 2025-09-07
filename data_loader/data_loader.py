@@ -39,12 +39,13 @@ class DataLoader:
 
                 }
                 metadata.append(file)
-                self.metadataFromPodcasts=metadata
 
 
 
         else:
             logger.error(f"The path '{ self.file_path}' is not a valid folder.")
+        self.metadataFromPodcasts=metadata
+
 
 
 
