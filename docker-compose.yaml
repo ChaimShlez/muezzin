@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKER_CONNECT: "kafka_service:9092"
+    depends_on:
+      - kafka_service
+    networks:
+      - appnet
+
+
+  kafka_service:
+    image: bitnami/kafka:3.5
+    container_name: kafka_service
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka_service:9092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka_service:9093
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+    networks:
+      - appnet
+
+
+  mongodb1:
+    image: mongo:7.0.23
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secretpassword
+      MONGO_INITDB_DATABASE: mydb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - appnet
+
+
+#  producer-app:
+#    build:
+#      context: .
+#      dockerfile: producer_service/Dockerfile
+#    container_name: producer
+#    ports:
+#      - "8000:8000"
+#    environment:
+#      KAFKA_BROKER: kafka_service:9092
+#      TOPICS: interesting,not_interesting
+#    depends_on:
+#      - kafka_service
+#    networks:
+#      - appnet
+
+#
+#  consumer-interesting:
+#    build:
+#      context: .
+#      dockerfile: consumer_service/Dockerfile
+#    container_name: consumer-interesting
+#    ports:
+#      - "8001:8000"
+#    environment:
+#      MONGODB_USER: admin
+#      MONGODB_PASSWORD: secretpassword
+#      MONGODB_DATABASE: mydb
+#      MONGODB_COLLECTION: interesting
+#      KAFKA_BROKER: kafka_service:9092
+#      TOPIC: interesting
+#      GROUP_ID: interesting_id
+#    depends_on:
+#      - kafka_service
+#      - mongodb
+#    networks:
+#      - appnet
+
+
+#  consumer-not_interesting:
+#    build:
+#      context: .
+#      dockerfile: consumer_service/Dockerfile
+#    container_name: consumer-not_interesting
+#    ports:
+#      - "8002:8000"
+#    environment:
+#      MONGODB_USER: admin
+#      MONGODB_PASSWORD: secretpassword
+#      MONGODB_DATABASE: mydb
+#      MONGODB_COLLECTION: not_interesting
+#      KAFKA_BROKER: kafka_service:9092
+#      TOPIC: not_interesting
+#      GROUP_ID: not_interesting_id
+#    depends_on:
+#      - kafka_service
+#      - mongodb
+#    networks:
+#      - appnet
+
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    networks:
+      - appnet
+
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - appnet
+
+
+  # elastic-app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: elastic-app
+  #   ports:
+  #     - "8003:8000"
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #   depends_on:
+  #     - elasticsearch
+  #   networks:
+  #     - appnet
+
+volumes:
+  mongo_data:
+
+networks:
+  appnet:
+    driver: bridge
