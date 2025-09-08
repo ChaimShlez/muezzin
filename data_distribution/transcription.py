@@ -1,7 +1,6 @@
 from faster_whisper import WhisperModel
 
-
-class Stt:
+class Transcription:
     @staticmethod
     def speach_to_text(path):
 
@@ -13,8 +12,6 @@ class Stt:
 
             text+=seg.text
         return text
-
-            # print(line, end="")
 
 
 

@@ -8,7 +8,7 @@
 * There is a manager who is responsible for running all stages and is responsible for the order of operations.
 
 
-## data_distribution
+## data-distribution
 
 ### This department's job is to distribute the information to the database.
 

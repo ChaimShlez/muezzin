@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from data_distribution.connect_mongo import ConnectMongo
-from data_distribution.stt import Stt
+from data_distribution.transcription import Stt
 from utils.confin_kafka import KafkaConfigurations
 from generte_id import generate_id_from_data
 from connect_elastic import ConnectElastic
