@@ -9,8 +9,8 @@ class Consumer:
         self.connect_kafka=KafkaConfigurations.consumer_connect(
             "metadata_podcasts")
         self.connect_elastic = ConnectElastic("podcasts")
-        con=self.connect_mongo=ConnectMongo("muezzin","podcasts")
-        print("mongo",con)
+        self.connect_mongo=ConnectMongo("muezzin","podcasts")
+
 
 
 

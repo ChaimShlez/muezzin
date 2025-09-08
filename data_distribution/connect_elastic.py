@@ -19,7 +19,7 @@ class ConnectElastic:
 
 
     def create_index(self):
-        # self.con_elastic.es.indices.delete(index=index_name)
+
         mappings = {
                 "properties": {
                     "PodcastID": {
