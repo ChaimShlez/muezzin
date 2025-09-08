@@ -23,7 +23,7 @@ class Manager:
 if __name__ == "__main__":
     m=Manager()
     m.run()
-    # d.fetcher_from()
+
 
 
 
