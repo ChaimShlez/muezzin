@@ -26,11 +26,15 @@ class ConnectElastic:
                         "type":"keyword"
 
                     },
+                    "Text": {
+                        "type": "text"
+
+                    },
                     "CreationTime": {
-                        "type": "keyword"
+                        "type": "date"
                     },
                     "LastModified": {
-                        "type": "keyword"
+                        "type": "date"
                     },
 
                 }
@@ -45,11 +49,16 @@ class ConnectElastic:
         except Exception as e:
             logger.error(f"Creation failed: {e}")
 
-    def insert_data(self, data,podcast_id):
+    def insert_data(self, data,podcast_id,text):
         try:
             logger.info(f" insert metadata to elastic {data}")
+            document = {
+                'metadata': data,
+                'podcast_text': text
 
-            response = self.es.index(index=self.index_name, body=data, id=podcast_id)
+            }
+
+            response = self.es.index(index=self.index_name, body=document, id=podcast_id)
             self.es.indices.refresh(index=self.index_name)
             print("res",response)
         except Exception as e:

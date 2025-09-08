@@ -29,15 +29,17 @@ class DataLoader:
             logger.info(f"Extract from folder {self.file_path}")
 
             for item in  self.file_path.iterdir():
-                print(self.path)
-                print(item)
+
                 stats = item.stat()
+
+
                 file={
                      "path":str(item),
                      "Name":item.name,
                      "Size":stats.st_size,
-                     "Creation time" :str(datetime.datetime.fromtimestamp(stats.st_ctime)),
-                     "Last modified":str(datetime.datetime.fromtimestamp(stats.st_mtime))
+                     "Creation_time" :str(datetime.datetime.fromtimestamp(stats.st_ctime)),
+                     "Last_modified":str(datetime.datetime.fromtimestamp(stats.st_mtime)),
+
 
                 }
                 metadata.append(file)

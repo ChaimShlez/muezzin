@@ -1,5 +1,4 @@
 
-import os
 from utils.config_mongo import ConfigMongo
 from bson.binary import Binary
 
@@ -16,8 +15,7 @@ class ConnectMongo:
     def insert_file(self,path,podcast_id):
 
         try:
-            out = os.path.isdir(path)
-            print(out)
+
             logger.info(f" insert file to mongodb {path}")
             with open(path, 'rb') as f:
 
