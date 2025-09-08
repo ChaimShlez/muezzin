@@ -9,9 +9,10 @@ class Transcription:
 
         text=""
         for seg in segments:
+            print(seg)
 
-            text+=seg.text
-        return text
+            text += seg.text
+
 
 
 

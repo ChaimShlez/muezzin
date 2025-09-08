@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from data_distribution.connect_mongo import ConnectMongo
-from data_distribution.transcription import Stt
+from data_distribution.transcription import Transcription
+
 from utils.confin_kafka import KafkaConfigurations
 from generte_id import generate_id_from_data
 from connect_elastic import ConnectElastic
@@ -35,7 +36,7 @@ class Distribution:
 
             record.value['Creation_time'] = convert_creation_time
 
-            text=Stt.speach_to_text(record.value['path'])
+            text=Transcription.speach_to_text(record.value['path'])
             self.connect_elastic.insert_data(record.value,podcast_id,text)
             self.connect_mongo.insert_file(record.value['path'],podcast_id)
 
