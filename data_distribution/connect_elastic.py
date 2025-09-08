@@ -1,11 +1,8 @@
-import logging
-
-from elasticsearch import helpers
 
 from utils.config_elastic import ConfigElastic
+from utils.logger import Logger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = Logger.get_logger()
 
 
 class ConnectElastic:

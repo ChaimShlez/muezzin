@@ -1,11 +1,11 @@
 import json
 import os
-import logging
+
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import KafkaError
+from utils.logger import Logger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = Logger.get_logger()
 
 class KafkaConfigurations:
 

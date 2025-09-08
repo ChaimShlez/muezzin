@@ -1,10 +1,9 @@
 import pymongo
 from pymongo import MongoClient
 import os
-import logging
+from utils.logger import Logger
 
-logging.basicConfig( level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = Logger.get_logger()
 
 class ConfigMongo:
 

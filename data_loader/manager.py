@@ -1,7 +1,8 @@
 from data_loader import DataLoader
 from producer import Producer
+from utils.logger import Logger
 
-
+logger = Logger.get_logger()
 class Manager:
     def __init__(self):
         self.loadr=DataLoader("C:\podcasts")
@@ -10,12 +11,12 @@ class Manager:
 
 
     def run(self):
-        # self.loadr.set_path("C:\podcasts")
+        logger.info("run manager data loader")
         self.loadr.extract_metadata()
         self.metadata=self.loadr.metadataFromPodcasts
 
-
         for item in self.metadata:
+            logger.info(f"publish to kafka{item}")
             self.producer.send_data(item)
 
 

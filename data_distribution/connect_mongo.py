@@ -1,10 +1,11 @@
-import logging
+
 import os
 from utils.config_mongo import ConfigMongo
 from bson.binary import Binary
-from gridfs import GridFS
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
+from utils.logger import Logger
+
+logger = Logger.get_logger()
 
 class ConnectMongo:
     def __init__(self,db_name,collection_name):

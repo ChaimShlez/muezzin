@@ -1,10 +1,13 @@
-import logging
+
 import os
 from pathlib import Path
 import datetime
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from utils.logger import Logger
+
+
+logger = Logger.get_logger()
+
 
 class DataLoader:
 
@@ -12,14 +15,11 @@ class DataLoader:
         self.metadataFromPodcasts=None
         self.path=path
         self.file_path = Path(str(self.path))
-        print(self.file_path)
-        # print(file_path.stat())
+
 
 
     def set_path(self,path):
         self.path=path
-
-
 
 
     def extract_metadata(self):
@@ -41,9 +41,6 @@ class DataLoader:
 
                 }
                 metadata.append(file)
-
-
-
         else:
             logger.error(f"The path '{ self.file_path}' is not a valid folder.")
         self.metadataFromPodcasts=metadata

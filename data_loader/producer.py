@@ -1,8 +1,10 @@
 
 from utils.confin_kafka import KafkaConfigurations
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
+
+from utils.logger import Logger
+
+logger = Logger.get_logger()
 
 class Producer:
     def __init__(self):
@@ -14,10 +16,11 @@ class Producer:
 
     def publish_message(self, topic, message):
         try:
+            logger.info(f"Message sent to topic {topic}: {message}")
             self.connect_kafka.send(topic, message)
             self.connect_kafka.flush()
 
-            logger.info(f"Message sent to topic {topic}: {message}")
+
         except Exception as e:
             logger.error(f"Error publishing message to topic {topic}: {e}")
 

@@ -1,11 +1,12 @@
 import os
 import time
-import logging
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from utils.logger import Logger
+
+logger = Logger.get_logger()
 
 
 class ConfigElastic:
@@ -29,4 +30,3 @@ class ConfigElastic:
 
 
 
-r = ConfigElastic.connection_elastic()
