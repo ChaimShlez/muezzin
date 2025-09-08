@@ -23,7 +23,7 @@ class Logger:
              def emit(self, record):
                  try:
                      es.index(index=index, document={
-                         "timestamp": datetime.utcnow().isoformat(),
+                         "timestamp": datetime.now().isoformat(),
 
                          "level": record.levelname,
                          "logger": record.name,
