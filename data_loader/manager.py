@@ -5,15 +5,15 @@ from utils.logger import Logger
 logger = Logger.get_logger()
 class Manager:
     def __init__(self):
-        self.loadr=DataLoader("C:\podcasts")
+        self.loader=DataLoader("C:\podcasts")
         self.producer=Producer()
         self.metadata=None
 
 
     def run(self):
         logger.info("run manager data loader")
-        self.loadr.extract_metadata()
-        self.metadata=self.loadr.metadataFromPodcasts
+        self.loader.extract_metadata()
+        self.metadata=self.loader.metadataFromPodcasts
 
         for item in self.metadata:
             logger.info(f"publish to kafka{item}")
