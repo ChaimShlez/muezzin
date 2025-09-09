@@ -59,8 +59,6 @@ class ConnectElastic:
             print("res", response)
             self.es.indices.refresh(index=self.index_name)
 
-
-
         except Exception as e:
             logger.error(f"Insertion failed: {e}")
 

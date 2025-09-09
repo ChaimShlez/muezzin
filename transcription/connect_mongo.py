@@ -16,11 +16,13 @@ class ConnectMongo:
     def get_by_id(self,podcast_id):
 
         try:
-           date= self.con.find_one({"podcast_id":podcast_id},{"_id":0})
-           date_binary=date['data']
-           data_file=io.BytesIO(date_binary)
+            logger.info(f"get binary string by  {podcast_id}")
 
-           return data_file
+            date= self.con.find_one({"podcast_id":podcast_id},{"_id":0})
+            date_binary=date['data']
+            data_file=io.BytesIO(date_binary)
+
+            return data_file
 
         except Exception as e:
             logger.error(f"An error occurred: {e}")
