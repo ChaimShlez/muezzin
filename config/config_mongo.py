@@ -1,7 +1,6 @@
 import pymongo
-from pymongo import MongoClient
 import os
-from utils.logger import Logger
+from logs.logger import Logger
 
 logger = Logger.get_logger()
 
@@ -13,7 +12,7 @@ class ConfigMongo:
         mongo_password = os.getenv("MONGODB_PASSWORD", "secretpassword")
         mongo_db = os.getenv("MONGODB_DATABASE", db_name)
         client = pymongo.MongoClient(
-            f"mongodb://{mongo_user}:{mongo_password}@localhost:27017/"
+            f"mongodb://{mongo_user}:{mongo_password}@mongodb:27017/"
         )
 
 

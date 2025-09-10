@@ -1,9 +1,7 @@
-
-import os
 from pathlib import Path
 import datetime
 
-from utils.logger import Logger
+from logs.logger import Logger
 
 
 logger = Logger.get_logger()

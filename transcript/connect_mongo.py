@@ -1,7 +1,6 @@
+import io
 
 from config.config_mongo import ConfigMongo
-from bson.binary import Binary
-
 from logs.logger import Logger
 
 logger = Logger.get_logger()
@@ -12,17 +11,16 @@ class ConnectMongo:
 
 
 
-    def insert_file(self,path,podcast_id):
+    def get_by_id(self,podcast_id):
 
         try:
+            logger.info(f"get binary string by  {podcast_id}")
 
-            logger.info(f" insert file to mongodb {path}")
-            with open(path, 'rb') as f:
-                audio_data = f.read()
-            self.con.insert_one({
+            date= self.con.find_one({"podcast_id":podcast_id},{"_id":0})
+            date_binary=date['data']
+            data_file=io.BytesIO(date_binary)
 
-                "podcast_id": podcast_id,
-                "data": Binary(audio_data)
-            })
+            return data_file
+
         except Exception as e:
             logger.error(f"An error occurred: {e}")

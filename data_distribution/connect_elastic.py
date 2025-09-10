@@ -1,6 +1,6 @@
 
-from utils.config_elastic import ConfigElastic
-from utils.logger import Logger
+from config.config_elastic import ConfigElastic
+from logs.logger import Logger
 
 logger = Logger.get_logger()
 
@@ -26,12 +26,8 @@ class ConnectElastic:
                         "type":"keyword"
 
                     },
-                    "Text": {
-                        "type": "text"
-
-                    },
                     "CreationTime": {
-                        "type": "date"
+                        "type": "date","format": "yyyy-MM-dd HH:mm:ss"
                     },
                     "LastModified": {
                         "type": "date"
@@ -49,16 +45,11 @@ class ConnectElastic:
         except Exception as e:
             logger.error(f"Creation failed: {e}")
 
-    def insert_data(self, data,podcast_id,text):
+    def insert_data(self, data,podcast_id):
         try:
-            logger.info(f" insert metadata to elastic {data}")
-            document = {
-                'metadata': data,
-                'podcast_text': text
+            logger.info(f" insert metadata to elastic {data},{podcast_id}")
 
-            }
-
-            response = self.es.index(index=self.index_name, body=document, id=podcast_id)
+            response = self.es.index(index=self.index_name, body=data, id=podcast_id)
             self.es.indices.refresh(index=self.index_name)
             print("res",response)
         except Exception as e:

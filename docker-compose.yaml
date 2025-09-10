@@ -1,0 +1,155 @@
+version: '3.8'
+
+services:
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKER_CONNECT: "kafka_service:9092"
+    depends_on:
+      - kafka_service
+    networks:
+      - appnet
+
+
+  kafka_service:
+    image: bitnami/kafka:3.5
+    container_name: kafka_service
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka_service:9092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka_service:9093
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+    networks:
+      - appnet
+
+
+  mongodb:
+    image: mongo:7.0.23
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secretpassword
+      MONGO_INITDB_DATABASE: mydb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - appnet
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    networks:
+      - appnet
+
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - appnet
+
+
+
+  transcript:
+    build:
+      context: .
+      dockerfile: transcript/Dockerfile
+    container_name: transcript
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTIC_INDEX : podcasts
+      MONGODB_USER: admin
+      MONGODB_PASSWORD: secretpassword
+      MONGODB_DATABASE: muezzin
+      MONGODB_COLLECTION: podcasts
+      KAFKA_BROKER: kafka_service:9092
+      TOPIC_CONSUMER: podcasts_id
+      TOPIC_PRODUCER: text_analyzer
+    depends_on:
+      - kafka_service
+      - elasticsearch
+      - mongodb
+    networks:
+      - appnet
+
+
+  processing:
+    build:
+      context: .
+      dockerfile: processing/Dockerfile
+    container_name: processing
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTIC_INDEX: podcasts
+      KAFKA_BROKER: kafka_service:9092
+      TOPIC_CONSUMER: text_analyzer
+    depends_on:
+      - elasticsearch
+    networks:
+      - appnet
+
+
+  data_loader:
+    build:
+      context: .
+      dockerfile: data_loader/Dockerfile
+    container_name: data_loader
+    volumes:
+      - C:\podcasts:/data/db
+    environment:
+      KAFKA_BROKER: kafka_service:9092
+      PATH: /data/db
+      TOPIC_PRODUCER: metadata_podcasts
+    depends_on:
+      - kafka_service
+    networks:
+      - appnet
+
+  data_distribution:
+     build:
+       context: .
+       dockerfile: data_distribution/Dockerfile
+     container_name: data_distribution
+     environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTIC_INDEX: podcasts
+      MONGODB_USER: admin
+      MONGODB_PASSWORD: secretpassword
+      MONGODB_DATABASE: muezzin
+      MONGODB_COLLECTION: podcasts
+      KAFKA_BROKER: kafka_service:9092
+      TOPIC_CONSUMER: metadata_podcasts
+      TOPIC_PRODUCER: podcasts_id
+     depends_on:
+       - elasticsearch
+       - kafka_service
+       - mongodb
+     networks:
+       - appnet
+
+volumes:
+  mongo_data:
+
+networks:
+  appnet:
+    driver: bridge

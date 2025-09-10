@@ -14,14 +14,18 @@
 
 * Taking the data from the appropriate topic in Kafka
 * Skipping one record after another (because the consumer is listening all the time)
-* Creating a unique id for each record by entering it into a hash function 
-* (I only took part of the generated text because it is very long and was not necessary)
-* I took the path of each file and transcribed it using the "faster_whisper" package, which is an optimization for openAI's whisper,
-and I chose to do the transcription already at this stage because I saw no reason to make unnecessary api calls to get the binary file stored in Mongo
-if I already have the path of the file.
-* I save the metadata in Elastic with the text and the id, 
-* I converted the file contents to binary with "bson.binary" and I save it with the id in Mongo
+* Creating a unique ID for each record by feeding it to a hash function
+* (I only took a part of the generated text because it is very long and was not needed)
+* I store the metadata in Elastic with the text and the ID,
+* I converted the file content to a binary file with "bson.binary" and I store it with the ID in Mongo
+* I added only the ID to another topic, and then used another service to retrieve the IDs and pull them from Mongo.
+* The reason I chose to do this is because it is a time-consuming process and I did not want it to delay the metadata being sent.
+* Kafka also helps me maintain order because it works in a queue, and even if the system crashes, I can easily know where I stopped the transcription.
+* I extracted from a binary file using o.BytesIO which takes the binary string and puts it into a file that can be read from it and the transcription library knows how to read the file.
+* And I transcribed it using the "faster_whisper" package, which is an optimization for openAI's whisper,
 
-
-
-
+## processing
+* In the data analysis phase, I also use Kafka because analyzing information can take a long time, 
+* so it's more appropriate to leave it for another topic (although our analysis is fast, but considering a large system,
+* it takes a long time). The calculation of the risk level was done like this: the number of problematic words + the score divided by the length of the text,
+* and to see the percentages, multiply by 100.
