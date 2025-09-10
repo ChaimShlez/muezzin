@@ -8,7 +8,7 @@ class Logger:
     _logger = None
 
     @classmethod
-    def get_logger(cls, name="logger_podcasts",  es_host = os.getenv("ELASTICSEARCH_HOSTS", "http://localhost:9200"),index="logger_podcasts", level=logging.DEBUG):
+    def get_logger(cls, name="logger_podcasts",  es_host = os.getenv("ELASTICSEARCH_HOSTS", "http://elasticsearch:9200"),index="logger_podcasts", level=logging.DEBUG):
 
 
         if cls._logger:

@@ -1,7 +1,7 @@
 from pprint import pprint
 
-from utils.config_elastic import ConfigElastic
-from utils.logger import Logger
+from config.config_elastic import ConfigElastic
+from logs.logger import Logger
 
 logger = Logger.get_logger()
 
@@ -16,36 +16,7 @@ class ConnectElastic:
 
 
 
-    def update_index(self):
 
-        mappings = {
-                "properties": {
-                    "PodcastID": {
-                        "type": "keyword"
-                    },
-                    "Name":{
-                        "type":"keyword"
-
-                    },
-                    "CreationTime": {
-                        "type": "date"
-                    },
-                    "LastModified": {
-                        "type": "date"
-                    },
-
-                }
-        }
-
-        try:
-            logger.info(f" Create index in elastic {self.index_name}")
-
-            if not self.es.indices.exists(index=self.index_name):
-                res=self.es.indices.create(index=self.index_name, mappings=mappings)
-
-                print(res)
-        except Exception as e:
-            logger.error(f"Creation failed: {e}")
 
     def update_data(self, text,podcast_id):
         try:

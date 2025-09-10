@@ -1,6 +1,6 @@
 
-from utils.config_elastic import ConfigElastic
-from utils.logger import Logger
+from config.config_elastic import ConfigElastic
+from logs.logger import Logger
 
 logger = Logger.get_logger()
 

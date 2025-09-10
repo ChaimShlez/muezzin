@@ -23,3 +23,9 @@
 * Kafka also helps me maintain order because it works in a queue, and even if the system crashes, I can easily know where I stopped the transcription.
 * I extracted from a binary file using o.BytesIO which takes the binary string and puts it into a file that can be read from it and the transcription library knows how to read the file.
 * And I transcribed it using the "faster_whisper" package, which is an optimization for openAI's whisper,
+
+## processing
+* In the data analysis phase, I also use Kafka because analyzing information can take a long time, 
+* so it's more appropriate to leave it for another topic (although our analysis is fast, but considering a large system,
+* it takes a long time). The calculation of the risk level was done like this: the number of problematic words + the score divided by the length of the text,
+* and to see the percentages, multiply by 100.

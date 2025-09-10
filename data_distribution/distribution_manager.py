@@ -1,12 +1,11 @@
-from datetime import datetime
+import os
 
 from data_distribution.connect_mongo import ConnectMongo
-from transcription.transcription import Transcription
 
-from utils.confin_kafka import KafkaConfigurations
-from generte_id import generate_id_from_data
-from connect_elastic import ConnectElastic
-from utils.logger import Logger
+from config.confin_kafka import KafkaConfigurations
+from data_distribution.generte_id import generate_id_from_data
+from data_distribution.connect_elastic import ConnectElastic
+from logs.logger import Logger
 
 logger = Logger.get_logger()
 
@@ -16,11 +15,11 @@ logger = Logger.get_logger()
 
 class Distribution:
     def __init__(self):
-        self.connect_kafka_consumer=KafkaConfigurations.consumer_connect("metadata_podcasts")
+        self.connect_kafka_consumer=KafkaConfigurations.consumer_connect(os.getenv("TOPIC_CONSUMER"))
 
-        self.connect_elastic = ConnectElastic("podcasts")
+        self.connect_elastic = ConnectElastic(os.getenv("ELASTIC_INDEX"))
         # self.connect_elastic.es.indices.delete(index="podcasts")
-        self.connect_mongo=ConnectMongo("muezzin","podcasts")
+        self.connect_mongo=ConnectMongo(os.getenv("MONGODB_DATABASE"),os.getenv("MONGODB_COLLECTION"))
         self.connect_kafka = KafkaConfigurations.producer_connect()
 
 
@@ -45,7 +44,7 @@ class Distribution:
             podcast_id = generate_id_from_data(record.value)
 
 
-            KafkaConfigurations.publish_message(self.connect_kafka,"podcasts_id",podcast_id)
+            KafkaConfigurations.publish_message(self.connect_kafka,os.getenv("TOPIC_PRODUCER"),podcast_id)
 
             data=self.split_data(record.value)
             self.connect_elastic.insert_data(data,podcast_id)

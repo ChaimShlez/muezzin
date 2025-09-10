@@ -1,8 +1,8 @@
 
-from utils.config_mongo import ConfigMongo
+from config.config_mongo import ConfigMongo
 from bson.binary import Binary
 
-from utils.logger import Logger
+from logs.logger import Logger
 
 logger = Logger.get_logger()
 
@@ -18,9 +18,7 @@ class ConnectMongo:
 
             logger.info(f" insert file to mongodb {path}")
             with open(path, 'rb') as f:
-
                 audio_data = f.read()
-
             self.con.insert_one({
 
                 "podcast_id": podcast_id,

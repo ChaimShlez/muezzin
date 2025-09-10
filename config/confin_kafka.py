@@ -3,7 +3,7 @@ import os
 
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import KafkaError
-from utils.logger import Logger
+from logs.logger import Logger
 
 logger = Logger.get_logger()
 

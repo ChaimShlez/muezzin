@@ -1,4 +1,4 @@
-from faster_whisper import WhisperModel
+from  faster_whisper import WhisperModel
 
 
 class Transcription:
